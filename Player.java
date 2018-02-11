@@ -6,7 +6,7 @@ import java.io.File;
 
 //plays mp3
 public class Player {
-    private static MediaPlayer mediaPlayer;
+    protected static MediaPlayer mediaPlayer;
 
     public void play(String songPath) {
 
