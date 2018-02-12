@@ -1,4 +1,5 @@
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
@@ -49,15 +50,36 @@ public class Controller {
         library.setMinWidth(134);
         this.libraryOptions.getItems().add(library);
         library.setOnAction(event -> {
+
             playlist.getSelectionModel().select(null);
-            playlist.setStyle("-fx-background-color: #e6e6e6;-fx-background-insets:0;-fx-min-height:33px;" +
-                    "-fx-border-color: #d9d9d9;" + "-fx-border-width: 1.5 1.5 1.5 1.5;");
+            playlist.setStyle("-fx-font-weight: normal;-fx-min-height:33px;");
             libraryOptions.getSelectionModel().select(library);
             title.setText(library.getText());
 
             loadLibrary();
+
         });
+
         library.fire();
+
+        this.libraryOptions.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                String stylShorter = "-fx-selection-bar-non-focused:#0099cc;-fx-background-insets: 1;";
+                String styleShorterExtend = "-fx-background-color: transparent;-fx-font-weight: bold;";
+                libraryOptions.setStyle(stylShorter + "-fx-max-height:33px;" + styleShorterExtend);
+            }
+        });
+
+        this.libraryOptions.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+
+                String stylShorter = "-fx-selection-bar-non-focused:#0099cc;-fx-background-insets: 1;";
+                String styleShorterExtend = "-fx-background-color: transparent;-fx-font-weight: normal;";
+                libraryOptions.setStyle(stylShorter + "-fx-max-height:33px;" + styleShorterExtend);
+            }
+        });
     }
 
     private void playListHandler() {
@@ -75,16 +97,30 @@ public class Controller {
         }
 
         this.playlist.setOnAction(event -> {
+
             libraryOptions.getSelectionModel().select(-1);
             String selectedValue = playlist.getSelectionModel().getSelectedItem();
-            playlist.setStyle("-fx-background-color: #0099cc;-fx-background-insets:0;-fx-min-height:33px;" +
-                    "-fx-border-color: #d9d9d9;" + "-fx-border-width: 1.5 1.5 1.5 1.5;");
+            playlist.setStyle("-fx-font-weight: normal;-fx-min-height:33px;");
             listOfSongs.getItems().clear();
             StringCopy.clear();
 
             title.setText(playlist.getValue());
 
             //TODO:load playlist
+        });
+
+        this.playlist.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                playlist.setStyle("-fx-font-weight: bold;-fx-min-height:33px;");
+            }
+        });
+
+        this.playlist.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                playlist.setStyle("-fx-font-weight: normal;-fx-min-height:33px;");
+            }
         });
     }
 
@@ -179,7 +215,22 @@ public class Controller {
             listOfSongs.getSelectionModel().select(button);
             objectInUse = listOfSongs.getSelectionModel().getSelectedIndex();
             player.play(button.getSongPath());
-            //player.autoPlay(button,this.listOfSongs);
+            player.autoPlay(button, this.listOfSongs);
+        });
+
+        button.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                button.setStyle("-fx-background-color: transparent;-fx-font-weight: bold;");
+
+            }
+        });
+
+        button.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                button.setStyle("-fx-background-color: transparent;-fx-font-weight: normal;");
+            }
         });
     }
 }

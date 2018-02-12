@@ -3,19 +3,10 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
-import java.awt.*;
 
 //Define Gui components
 public class JoseMp3Player extends Application {
@@ -45,28 +36,34 @@ public class JoseMp3Player extends Application {
 
         Controller controller = new Controller(
                 file, this.listOfSongs, this.libraryOptions, this.playlistChooser,
-                this.popUpWindow,this.okButton,this.cancelButton,this.textField,this.title
+                this.popUpWindow, this.okButton, this.cancelButton, this.textField, this.title
         );
     }
 
     private void setStyle() {
 
-        this.listOfSongs.setStyle(nonFocus("#0099cc") + styleHW("500","max","width"));
+        this.listOfSongs.setStyle(nonFocus("#0099cc") + styleHW("500", "max", "width"));
 
-        this.libraryOptions.setStyle(nonFocus("#0099cc") + styleHW("33","max","height"));
+        this.libraryOptions.setStyle(nonFocus("#0099cc") + styleHW("33", "max", "height"));
 
-        this.playlistChooser.setStyle(nonFocus("#e6e6e6") + styleHW("33","min","height") +
-                "-fx-border-color: #d9d9d9;" + "-fx-border-width: 1.5 1.5 1.5 1.5;");
+        this.playlistChooser.setStyle("-fx-font-weight: normal;-fx-min-height:33px;");
 
-        String gradient = "-fx-background-color: linear-gradient(#ffffff, #d9d9d9);" +
-                "-fx-font-weight: bold; -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 6, 0.0 , 0 , 1 );";
+        //make lines shorter
+        String styleShort = "-fx-font-weight: bold;-fx-background-color: linear-gradient(#ffffff, #d9d9d9);";
+        String styleShortExtend = "-fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 6, 0.0 , 0 , 1 );";
+        String gradient = styleShortExtend + styleShort;
 
-        this.title.setStyle(gradient + styleHW("25","min","height") + styleHW("424","min","width"));
+        this.title.setStyle(gradient + styleHW("25", "min", "height") + styleHW("424", "min", "width"));
         this.title.setAlignment(Pos.CENTER);
     }
 
-    private String styleHW(String width,String minMax, String widthHeight){return "-fx-" + minMax + "-" + widthHeight + ":" + width +"px;";}
-    private String nonFocus(String color){ return "-fx-selection-bar-non-focused:"+ color + ";-fx-background-insets: 1;"; }
+    private String styleHW(String width, String minMax, String widthHeight) {
+        return "-fx-" + minMax + "-" + widthHeight + ":" + width + "px;";
+    }
+
+    private String nonFocus(String color) {
+        return "-fx-selection-bar-non-focused:" + color + ";-fx-background-insets: 1;";
+    }
 
     private void fillMenuBar() {
         this.menuBar.getMenus().add(this.file);
@@ -84,7 +81,7 @@ public class JoseMp3Player extends Application {
         vBoxLeft.getChildren().addAll(this.libraryOptions, this.playlistChooser);
 
         VBox vBoxCenter = new VBox();
-        vBoxCenter.getChildren().addAll(this.title,this.listOfSongs);
+        vBoxCenter.getChildren().addAll(this.title, this.listOfSongs);
 
 
         background.setTop(this.menuBar);
@@ -93,7 +90,7 @@ public class JoseMp3Player extends Application {
         this.libraryOptions.setMaxWidth(150);
         this.playlistChooser.setMaxWidth(150);
 
-        primaryStage.setScene(new Scene(background, 575, 300));
+        primaryStage.setScene(new Scene(background, 575, 450));
         primaryStage.setResizable(false);
         primaryStage.show();
     }
@@ -115,7 +112,7 @@ public class JoseMp3Player extends Application {
     }
     */
 
-    private void newStage (){
+    private void newStage() {
         this.popUpWindow = new Stage();
         this.popUpWindow.setTitle("Name the new playlist");
         BorderPane borderPane = new BorderPane();
@@ -130,9 +127,9 @@ public class JoseMp3Player extends Application {
         hBox.setPadding(new Insets(10));
         this.okButton = new Button("Ok");
         this.cancelButton = new Button("cancel");
-        hBox.getChildren().addAll(this.okButton,this.cancelButton);
+        hBox.getChildren().addAll(this.okButton, this.cancelButton);
         borderPane.setBottom(hBox);
 
-        popUpWindow.setScene(new Scene(borderPane,300,80));
+        popUpWindow.setScene(new Scene(borderPane, 300, 80));
     }
 }
