@@ -3,6 +3,7 @@ Personal Project to pass the time.
 
 #### Features
 A library tab
+
 A playlist tab.
 - Is a drop down that allows you to choose a playlist
 
