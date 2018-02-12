@@ -1,5 +1,17 @@
 # Mp3Player
-Personal Project to pass the time.
+Personal Project to pass the time and get some practice
+
+## Author
+* **Jose Cruz** - [Joseavel](https://github.com/joseavel)
+
+## How to run
+
+Copy the files and folders provided to a location on your computer. Open your prefered command line interpreter (I prefer Command Prompt)  change to the directory you've placed the previously mentioned files. Run the following commands to compile the source code and run the program:
+
+```
+javac *.java
+java View
+```
 
 #### Features (so far)
 A library tab
