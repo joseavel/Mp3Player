@@ -1,2 +1,3 @@
 # Mp3Player
-Personal Project to pass the time
+Personal Project to pass the time.
+#Features
