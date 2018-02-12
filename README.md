@@ -1,7 +1,7 @@
 # Mp3Player
 Personal Project to pass the time.
 
-#### Features
+#### Features (so far)
 A library tab
 
 A playlist tab.
