@@ -10,7 +10,7 @@ public class CustomButton extends Button {
 
         this.songPath = songPath;
 
-        setStyle("-fx-background-color: transparent;");
+        setStyle(new Style().rBackgroundColor("transparent"));
     }
 
     public String getSongPath() {

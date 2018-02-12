@@ -21,6 +21,7 @@ public class Controller {
     private TextField textField;
     private Label title;
     private int objectInUse;
+    private Style style;
 
     public Controller(
             Menu file, ListView<CustomButton> listOfSongs,
@@ -28,6 +29,7 @@ public class Controller {
             Stage popUpWindow, Button okButton, Button cancelButton,
             TextField textField, Label title) {
 
+        this.style = new Style();
         this.listOfSongs = listOfSongs;
         this.libraryOptions = libraryOptions;
         this.playlist = playlist;
@@ -52,7 +54,7 @@ public class Controller {
         library.setOnAction(event -> {
 
             playlist.getSelectionModel().select(null);
-            playlist.setStyle("-fx-font-weight: normal;-fx-min-height:33px;");
+            playlist.setStyle(playlistStyle("normal"));
             libraryOptions.getSelectionModel().select(library);
             title.setText(library.getText());
 
@@ -65,9 +67,7 @@ public class Controller {
         this.libraryOptions.setOnMouseEntered(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                String stylShorter = "-fx-selection-bar-non-focused:#0099cc;-fx-background-insets: 1;";
-                String styleShorterExtend = "-fx-background-color: transparent;-fx-font-weight: bold;";
-                libraryOptions.setStyle(stylShorter + "-fx-max-height:33px;" + styleShorterExtend);
+                libStyle("bold");
             }
         });
 
@@ -75,11 +75,15 @@ public class Controller {
             @Override
             public void handle(MouseEvent event) {
 
-                String stylShorter = "-fx-selection-bar-non-focused:#0099cc;-fx-background-insets: 1;";
-                String styleShorterExtend = "-fx-background-color: transparent;-fx-font-weight: normal;";
-                libraryOptions.setStyle(stylShorter + "-fx-max-height:33px;" + styleShorterExtend);
+                libStyle("normal");
             }
         });
+    }
+
+    private void libStyle(String weight){
+        String styl = style.backgroundInsets("1") + style.nonFocusSelection("#0099cc");
+        String stylExtend = style.rBackgroundColor("transparent") + style.fontWeight(weight);
+        libraryOptions.setStyle(styl + style.styleHeightWidth("max","height","33") + stylExtend);
     }
 
     private void playListHandler() {
@@ -100,7 +104,7 @@ public class Controller {
 
             libraryOptions.getSelectionModel().select(-1);
             String selectedValue = playlist.getSelectionModel().getSelectedItem();
-            playlist.setStyle("-fx-font-weight: normal;-fx-min-height:33px;");
+            playlist.setStyle(playlistStyle("normal"));
             listOfSongs.getItems().clear();
             StringCopy.clear();
 
@@ -112,16 +116,20 @@ public class Controller {
         this.playlist.setOnMouseEntered(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                playlist.setStyle("-fx-font-weight: bold;-fx-min-height:33px;");
+                playlist.setStyle(playlistStyle("bold"));
             }
         });
 
         this.playlist.setOnMouseExited(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                playlist.setStyle("-fx-font-weight: normal;-fx-min-height:33px;");
+                playlist.setStyle(playlistStyle("normal"));
             }
         });
+    }
+
+    private String playlistStyle(String weigth){
+        return style.fontWeight(weigth) + style.styleHeightWidth("min","height","33");
     }
 
     private void loadLibrary() {
@@ -221,7 +229,7 @@ public class Controller {
         button.setOnMouseEntered(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                button.setStyle("-fx-background-color: transparent;-fx-font-weight: bold;");
+                button.setStyle(buttonStyle("bold"));
 
             }
         });
@@ -229,8 +237,12 @@ public class Controller {
         button.setOnMouseExited(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                button.setStyle("-fx-background-color: transparent;-fx-font-weight: normal;");
+                button.setStyle(buttonStyle("normal"));
             }
         });
+    }
+
+    private String buttonStyle(String weight){
+        return style.rBackgroundColor("transparent") + style.fontWeight(weight);
     }
 }

@@ -42,27 +42,18 @@ public class JoseMp3Player extends Application {
 
     private void setStyle() {
 
-        this.listOfSongs.setStyle(nonFocus("#0099cc") + styleHW("500", "max", "width"));
+        Style style = new Style();
+        String styl = style.backgroundInsets("1") + style.nonFocusSelection("#0099cc");
+        this.listOfSongs.setStyle(styl + style.styleHeightWidth("max", "width", "500"));
 
-        this.libraryOptions.setStyle(nonFocus("#0099cc") + styleHW("33", "max", "height"));
-
-        this.playlistChooser.setStyle("-fx-font-weight: normal;-fx-min-height:33px;");
+        this.libraryOptions.setStyle(styl + style.styleHeightWidth("max", "height", "33"));
+        this.playlistChooser.setStyle(style.fontWeight("normal") + style.styleHeightWidth("min", "height", "33"));
 
         //make lines shorter
-        String styleShort = "-fx-font-weight: bold;-fx-background-color: linear-gradient(#ffffff, #d9d9d9);";
-        String styleShortExtend = "-fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 6, 0.0 , 0 , 1 );";
-        String gradient = styleShortExtend + styleShort;
-
-        this.title.setStyle(gradient + styleHW("25", "min", "height") + styleHW("424", "min", "width"));
+        String gradient = style.dropShadow() + style.fontWeight("bold") + style.linearGradient("#ffffff", "#d9d9d9");
+        String titleStyle = style.styleHeightWidth("min", "height", "25") + style.styleHeightWidth("min", "width", "424");
+        this.title.setStyle(gradient + titleStyle);
         this.title.setAlignment(Pos.CENTER);
-    }
-
-    private String styleHW(String width, String minMax, String widthHeight) {
-        return "-fx-" + minMax + "-" + widthHeight + ":" + width + "px;";
-    }
-
-    private String nonFocus(String color) {
-        return "-fx-selection-bar-non-focused:" + color + ";-fx-background-insets: 1;";
     }
 
     private void fillMenuBar() {
