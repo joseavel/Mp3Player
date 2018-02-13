@@ -1,5 +1,4 @@
 import java.io.*;
-
 public class Serialization {
     public static boolean write(Object data, String fileLocation) {
         try {
