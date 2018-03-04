@@ -117,15 +117,18 @@ public class Controller {
         ArrayList<String> stringArrayList = new ArrayList<>();
 
         String directoryPath = "./songs";
-        File directory = new File(directoryPath);
-        String[] files = directory.list();
+        if(new File(directoryPath).exists()){
 
-        if (files.length == 0) {
-            System.out.println("The directory is empty");
-        } else {
-            for (String file : files) {
-                if(file.contains(".mp3")){
-                    stringArrayList.add("./songs/" + file);
+            File directory = new File(directoryPath);
+            String[] files = directory.list();
+
+            if (files.length == 0) {
+                System.out.println("The directory is empty");
+            } else {
+                for (String file : files) {
+                    if(file.contains(".mp3")){
+                        stringArrayList.add("./songs/" + file);
+                    }
                 }
             }
         }
