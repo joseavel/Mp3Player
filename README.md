@@ -10,7 +10,7 @@ Make sure you have the latest java JDK con your computer. Copy the files and fol
 
 ```
 javac *.java
-java View
+java Main
 ```
 
 #### Features (so far)
