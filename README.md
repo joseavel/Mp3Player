@@ -15,8 +15,9 @@ java View
 
 #### Features (so far)
 A file menu bar with the following choices : 
-- Add a file (this lets you add a song to library tab)
+- coming soon
 
 A display section for the songs with the following features:
+- loads the songs folder if it exist and display the songs in it
 - you are able to click the song you want to play
 
