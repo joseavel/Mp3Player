@@ -1,40 +1,39 @@
+import javafx.scene.control.Button;
 import javafx.scene.media.MediaPlayer;
 
 /**
  * holds information of a song
  */
 public class Song {
-    private MediaPlayer mediaPlayer;
-    private String songName;
-    private String songDuration;
 
-    public String getSongName() {
+    private MediaPlayer mediaPlayer;
+    private Button songName;
+    private Button songDuration;
+
+    public void setSongName(String songName) {
+        this.songName = new Button(songName);
+    }
+    public Button getSongName() {
         return songName;
     }
 
-    public void setSongName(String songName) {
-        this.songName = songName;
-    }
-
-    public String getSongDuration() {
-        return songDuration;
-    }
-
     public void setSongDuration(String songDuration) {
-        this.songDuration = songDuration;
+        this.songDuration = new Button(songDuration);
     }
-
-    public MediaPlayer getMediaPlayer() {
-        return mediaPlayer;
+    public Button getSongDuration() {
+        return songDuration;
     }
 
     public void setMediaPlayer(MediaPlayer mediaPlayer) {
         this.mediaPlayer = mediaPlayer;
     }
+    public MediaPlayer getMediaPlayer() {
+        return mediaPlayer;
+    }
+
 
     //unit test
-    public static void main (String[] args){
+    public static void main(String[] args) {
         //launch(args);
-
     }
 }

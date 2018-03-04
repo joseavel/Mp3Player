@@ -1,17 +1,14 @@
-import javafx.scene.control.TableView;
+import java.util.ArrayList;
 
 public class LibraryMode implements Mp3State {
+
     @Override
-    public void addOneSong(Mp3Player mp3Player,TableView<Song> songTableView) {
-
-        int lastInserted = mp3Player.getSongArrayList().size() - 1;
-        Song song = mp3Player.getSongArrayList().get(lastInserted);
-        songTableView.getItems().add(song);
-
+    public void addSong(ArrayList<String> songPath, MP3Player mp3Player) {
+        mp3Player.addSong(songPath);
     }
 
     @Override
-    public void playSong(Mp3Player mp3Player, int indexToPlay) {
-        mp3Player.play(indexToPlay);
+    public void playSong(MP3Player mp3Player, int selectedIndex) {
+        mp3Player.playSong(selectedIndex);
     }
 }

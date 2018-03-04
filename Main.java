@@ -12,32 +12,34 @@ public class Main extends Application {
     private TableView<Song> songTableView;
     private MenuBar menuBar;
     Menu file;
-    public Main(){
+
+    public Main() {
         songTableView();
         menuBar();
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
         primaryStage.setTitle("MP3 Player");
         BorderPane borderPane = new BorderPane();
         borderPane.setTop(this.menuBar);
         borderPane.setCenter(this.songTableView);
 
         Controller controller = new Controller(this.songTableView, this.file);
-        primaryStage.setScene(new Scene(borderPane,500,600));
+        primaryStage.setScene(new Scene(borderPane, 900, 600));
         primaryStage.show();
     }
 
-    private void menuBar(){
+    private void menuBar() {
         this.menuBar = new MenuBar();
         this.file = new Menu("File");
         this.menuBar.getMenus().add(this.file);
     }
 
-    private void songTableView(){
+    private void songTableView() {
         this.songTableView = new TableView<>();
-        TableColumn<Song, String> songDuration = columns("Duration","songDuration");
+        TableColumn<Song, String> songDuration = columns("Duration", "songDuration");
         songDuration.setMinWidth(100);
         songDuration.setMaxWidth(100);
 
@@ -45,12 +47,14 @@ public class Main extends Application {
         this.songTableView.getColumns().addAll(columns("Title", "songName"), songDuration);
     }
 
-    private TableColumn<Song,String> columns(String columnName, String objectName){
+    private TableColumn<Song, String> columns(String columnName, String objectName) {
         TableColumn<Song, String> newColumn = new TableColumn<>(columnName);
         newColumn.setCellValueFactory(new PropertyValueFactory<>(objectName));
         newColumn.setSortable(false);
         return newColumn;
     }
 
-    public static void main(String[] args){ launch(args); }
+    public static void main(String[] args) {
+        launch(args);
+    }
 }

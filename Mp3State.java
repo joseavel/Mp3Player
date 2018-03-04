@@ -1,6 +1,9 @@
 import javafx.scene.control.TableView;
 
+import java.util.ArrayList;
+
+
 public interface Mp3State {
-    void addOneSong(Mp3Player mp3Player,TableView<Song> songTableView);
-    void playSong(Mp3Player mp3Player,int indexToPlay);
+    void addSong(ArrayList<String> songPath, MP3Player mp3Player);
+    void playSong(MP3Player mp3Player, int selectedIndex);
 }

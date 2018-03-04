@@ -1,149 +1,162 @@
-import javafx.scene.control.Button;
+import javafx.application.Application;
+import javafx.concurrent.Task;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.stage.Stage;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 /**
- * plays mp3
+ * this class simply plays mp3 files
  */
-public class Mp3Player {
+public class MP3Player extends Application{
 
-    //the fields useful to this class
+    private static MediaPlayer mediaPlayer;
+    private static Semaphore semaphore;
     private static ArrayList<Song> songArrayList;
-    private static int currentIndex;
-    private static int tracker;
-    private Button run;
+    private Task run;
 
-    //passing in one or many songPath
-    public Mp3Player() {
+    private int currentSongIndex;
+    private int itemCounter;
+    private int totalItems;
 
-        this.songArrayList = new ArrayList<>();
-        this.run = new Button();
-        this.currentIndex = 0;
-        this.tracker = 0;
+    public MP3Player() {
+        defaultTask();
+        songArrayList = new ArrayList<>();
+        semaphore = new Semaphore(1);
+        this.currentSongIndex = 0;
+        this.itemCounter = 0;
+        this.totalItems = 0;
     }
 
-    public void addManySong(ArrayList<String> songPath){
+    private void defaultTask(){
+        Task task = new Task() {
+            @Override
+            protected Object call() throws Exception {
+                System.out.println("you did not set the task, please do.");
+                return null;
+            }
+        };
+        setRun(task);
+    }
 
+    public void addSong(ArrayList<String> songPath) {
+
+        this.totalItems = songPath.size();
+
+        //i want to waitCounter if songPath is empty
         if (songPath.size() == 0) {
-            System.out.println("Error : you did not pass in anything");
+            System.out.println("Nothing was passed in");
             return;
-        } else {
-            ArrayList<String> filtered = new ArrayList<>();
+        }
 
-            for (String str : songPath) {
-                if (new File(str).exists()) {
-                    filtered.add(str);
-                } else {
-                    System.out.println("Error : Path " + str + " does not exist");
+        for (String str : songPath) {
+
+            //waitCounter if str is a valid path
+            if (new File(str).exists()) {
+
+                try {
+                    semaphore.acquire();
+                    setMediaPlayer(str);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-            }
 
-            if (filtered.size() == 0) {
-                System.out.println("Warning : There were no valid files passed in");
             } else {
-                for (String str : filtered) {
-                    setMediaPlayer(str, filtered.size());
-                }
+                verifyItemCount();
             }
         }
     }
 
-    public void addOneSong(String path){
-        if (new File(path).exists()) {
-            setMediaPlayer(path,1);
-        } else {
-            System.out.println("Error : Path " + path + " does not exist");
+    private void verifyItemCount() {
+        this.itemCounter = this.itemCounter + 1;
+        if (this.itemCounter == this.totalItems) {
+            this.itemCounter = 0;
+            this.run.run();
         }
     }
 
-    public void play(int index) {
-        if (this.songArrayList.size() == 0) {
-            System.out.println("Error: there is nothing to play");
-        } else {
 
-            try {
+    //create a media player
+    private void setMediaPlayer(String songPath) {
 
-                if (this.songArrayList.get(this.currentIndex).getMediaPlayer() != null) {
-                    this.songArrayList.get(this.currentIndex).getMediaPlayer().stop();
-                }
+        //create a media player.
+        Media media = new Media(new File(songPath).toURI().toString());
+        mediaPlayer = new MediaPlayer(media);
 
-                this.songArrayList.get(index).getMediaPlayer().play();
-
-            } catch (Exception e) {
-                System.out.println("Error : " + e);
-                return;
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                //trigger
+                System.out.println(new File(songPath).getName() + " timed out.");
+                timer.cancel();
+                semaphore.release();
+                verifyItemCount();
             }
+        }, 5000);
 
-            this.currentIndex = index;
+        mediaPlayer.setOnReady(() -> {
+            timer.cancel();
+
+            //TODO:code to create song object
+            String songName = new File(songPath).getName().replace(".mp3", "");
+            String songDuration = duration(mediaPlayer.getTotalDuration().toMillis());
+
+            Song song = new Song();
+            song.setSongName(songName);
+            song.setSongDuration(songDuration);
+            song.setMediaPlayer(mediaPlayer);
+            songArrayList.add(song);
+            semaphore.release();
+            verifyItemCount();
+        });
+    }
+
+    public void playSong(int songIndex) {
+
+        //waitCounter if song array list is empty
+        if (getSongArrayList().size() == 0) {
+            return;
+        }
+
+        if (getSongArrayList().get(currentSongIndex).getMediaPlayer() != null) {
+            getSongArrayList().get(currentSongIndex).getMediaPlayer().stop();
+        }
+
+        //make the index is not less than zero or more than song array list size
+        if (songIndex >= 0 && songIndex < getSongArrayList().size()) {
+            //System.out.println("Playing => " + getSongArrayList().get(songIndex).getSongName());
+            getSongArrayList().get(songIndex).getMediaPlayer().play();
+            this.currentSongIndex = songIndex;
+        } else {
+            System.out.println("invalid song selection");
         }
     }
 
     public void playNext() {
 
-        if (this.currentIndex < this.songArrayList.size() - 1) {
-            play(this.currentIndex + 1);
-        } else {
-            System.out.println("there is no next song");
+        if (this.currentSongIndex == getSongArrayList().size() - 1) {
+            System.out.println("There are no next song to play");
+            return;
         }
+
+        playSong(this.currentSongIndex + 1);
     }
 
     public void playPrevious() {
 
-        if (this.currentIndex > 0) {
-            play(this.currentIndex - 1);
-        } else {
-            System.out.println("there is no previous song");
+        if (this.currentSongIndex == 0) {
+            System.out.println("There are no previous songs to play");
+            return;
         }
-    }
 
-    public ArrayList<Song> getSongArrayList() {
-        if (this.songArrayList.size() == 0) {
-            System.out.println("Warning : the media player is empty");
-        }
-        return songArrayList;
-    }
-
-    public Button getRun() {
-        if (songArrayList.size() == 0) {
-            System.out.println("Warning : the media player is empty");
-        }
-        return run;
-    }
-
-    //create a media player
-    private void setMediaPlayer(String songPath, int target) {
-
-        Media media = new Media(new File(songPath).toURI().toString());
-        MediaPlayer mediaPlayer = new MediaPlayer(media);
-
-        Song song = new Song();
-        this.songArrayList.add(song);
-
-        mediaPlayer.setOnReady(() -> {
-
-            String songName = new File(songPath).getName().replace(".mp3", "");
-            String songDuration = duration(mediaPlayer.getTotalDuration().toMillis());
-
-            song.setSongName(songName);
-            song.setSongDuration(songDuration);
-            song.setMediaPlayer(mediaPlayer);
-
-            //my goal is to wait for all media to be ready before proceeding
-            fireRun(target);
-        });
-    }
-
-    private void fireRun(int target) {
-
-        this.tracker = this.tracker + 1;
-        if (this.tracker == target) {
-            this.tracker = 0;
-            this.run.fire();
-        }
+        playSong(this.currentSongIndex - 1);
     }
 
     private String duration(double duration) {
@@ -164,4 +177,53 @@ public class Mp3Player {
         //returning the new formatted duration
         return String.format(format, hours, minutes - minutesExtended, seconds - secondsExtended);
     }
+
+    public ArrayList<Song> getSongArrayList() {
+        return songArrayList;
+    }
+
+    public void setSongArrayList(ArrayList<Song> songArrayList) {
+        MP3Player.songArrayList = songArrayList;
+    }
+
+    public void setRun(Task run) {
+        this.run = run;
+    }
+
+    //unit test
+    public static void main(String[] args) {
+
+        MP3Player n = new MP3Player();
+        ArrayList<String> stringArrayList = new ArrayList<>();
+        stringArrayList.add("C:\\Users\\josea\\IdeaProjects\\MP3\\songs\\Comic Game Loop - Mischief.mp3");
+        stringArrayList.add("C:\\Users\\josea\\IdeaProjects\\MP3\\songs\\East of Tunesia.mp3");
+        stringArrayList.add("C:\\Users\\josea\\IdeaProjects\\MP3\\songs\\Forest Frolic Loop.mp3");
+        stringArrayList.add("C:\\Users\\josea\\IdeaProjects\\MP3\\songs\\Induced Insanity Loop.mp3");
+        stringArrayList.add("C:\\Users\\josea\\IdeaProjects\\MP3\\songs\\Magical Transition.mp3");
+        stringArrayList.add("C:\\Users\\josea\\IdeaProjects\\MP3\\songs\\Backbeat.mp3");
+        stringArrayList.add("C:\\Users\\josea\\IdeaProjects\\MP3\\songs\\DJ GIAN   Bachata Mix 2015 (The best).mp3");
+
+        Task task = new Task() {
+            @Override
+            protected Object call() throws Exception {
+
+                n.playSong(0);
+                //play music
+                for(Song song : n.getSongArrayList()){
+                    song.getMediaPlayer().setOnEndOfMedia(() -> {
+                        n.playNext();
+                    });
+                }
+                return null;
+            }
+        };
+        n.setRun(task);
+        n.addSong(stringArrayList);
+    }
+
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+    }//only here for unit test
+
 }
