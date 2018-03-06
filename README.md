@@ -21,3 +21,6 @@ A display section for the songs with the following features:
 - loads the songs folder if it exist and display the songs in it
 - you are able to click the song you want to play
 
+A play button:
+- allows you to play and pause a song.
+
