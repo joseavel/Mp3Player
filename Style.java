@@ -26,4 +26,7 @@ public class Style {
     public String backgroundInsets(String insets) {
         return "-fx-background-insets:" + insets + ";";
     }
+    public String radius(String radius){
+        return "-fx-background-radius: " + radius + "em;";
+    }
 }

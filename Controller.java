@@ -1,9 +1,15 @@
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.TableView;
+import javafx.scene.input.MouseButton;
+import javafx.scene.layout.Border;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -13,18 +19,50 @@ public class Controller {
     private MP3 mp3;
     private TableView<Song> songTableView;
     private Menu file;
+    private Button playButton;
 
-    public Controller(TableView<Song> songTableView, Menu file) {
+    public Controller(TableView<Song> songTableView, Menu file, Button playButton) {
         this.mp3Player = new MP3Player();
         this.mp3 = new MP3();
 
         this.file = file;
         this.songTableView = songTableView;
+        this.playButton = playButton;
+
+        /* functionality */
         songTableViewStyle();
         //set handler for mp3 player
         mp3Task();
         //populate the table view with saved songs
         populateSongTableView();
+        //set handlers for the play button
+        controlButtonHandlers();
+    }
+
+    private void controlButtonHandlers(){
+        this.playButton.setOnAction(event -> {
+
+            if(this.playButton.getText().equals("Play")){
+
+                if(this.songTableView.getItems().isEmpty()){return;}
+
+                if(this.songTableView.getSelectionModel().getSelectedItem() == null){
+                    cellHandler(this.songTableView.getItems().get(0));
+                }else{
+                    //TODO:resume the MP3Player
+                    this.mp3.getMp3State().resumeSong(mp3Player);
+                    playButtonChange("Pause");
+                }
+            }else{
+                //TODO:pause the MP3Player
+                this.mp3.getMp3State().pauseSong(this.mp3Player);
+                playButtonChange("Play");
+            }
+        });
+    }
+
+    private void playButtonChange(String change){
+        this.playButton.setText(change);
     }
 
     private void setSongTableViewHandler(Song song) {
@@ -32,7 +70,9 @@ public class Controller {
         cellStyle(song,"normal");
         //set both to same event because i want them to act as one
         song.getSongName().setOnMouseClicked(event -> {
-            cellHandler(song);
+            if(event.getButton() == MouseButton.PRIMARY){
+                cellHandler(song);
+            }
         });
 
         song.getSongName().setOnMouseEntered(event -> {
@@ -44,7 +84,9 @@ public class Controller {
         });
 
         song.getSongDuration().setOnMouseClicked(event -> {
-            cellHandler(song);
+            if(event.getButton() == MouseButton.PRIMARY){
+                cellHandler(song);
+            }
         });
 
         song.getSongDuration().setOnMouseEntered(event -> {
@@ -58,6 +100,7 @@ public class Controller {
     }
 
     private void songTableViewStyle(){
+
         this.songTableView.setStyle(
                 new Style().nonFocusSelection("#0099cc") +
                 new Style().backgroundInsets("1")
@@ -69,21 +112,22 @@ public class Controller {
         Style s = new Style();
         //i want to make the button transparent
         song.getSongName().setAlignment(Pos.CENTER_LEFT);
-        song.getSongName().setStyle(s.styleHeightWidth(
-                "min", "width", "795") +
-                s.rBackgroundColor("Transparent") + s.fontWeight(targetChange)
+        song.getSongName().setStyle(
+                s.styleHeightWidth("min", "width", "795") +
+                s.rBackgroundColor("Transparent") + s.fontWeight(targetChange) + s.backgroundInsets("-3")
         );
 
         song.getSongDuration().setAlignment(Pos.CENTER_LEFT);
-        song.getSongDuration().setStyle(s.styleHeightWidth(
-                "min", "width", "95") +
-                s.rBackgroundColor("Transparent") + s.fontWeight(targetChange)
+        song.getSongDuration().setStyle(
+                s.styleHeightWidth("min", "width", "95") +
+                s.rBackgroundColor("Transparent") + s.fontWeight(targetChange) + s.backgroundInsets("-3")
         );
     }
 
     private void cellHandler(Song song) {
         this.songTableView.getSelectionModel().select(song);
-        this.mp3.mp3State.playSong(this.mp3Player, songTableView.getSelectionModel().getSelectedIndex());
+        this.mp3.getMp3State().playSong(this.mp3Player, songTableView.getSelectionModel().getSelectedIndex());
+        playButtonChange("Pause");
     }
 
     private void mp3Task() {
@@ -135,7 +179,7 @@ public class Controller {
 
         //create a thread to handle adding songs to the MP3Player
         Thread thread = new Thread(() -> {
-            this.mp3.mp3State.addSong(stringArrayList, mp3Player);
+            this.mp3.getMp3State().addSong(stringArrayList, mp3Player);
         });
         thread.start();
     }

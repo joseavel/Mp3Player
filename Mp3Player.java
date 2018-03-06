@@ -129,6 +129,10 @@ public class MP3Player extends Application{
             getSongArrayList().get(currentSongIndex).getMediaPlayer().stop();
         }
 
+        execute(songIndex);
+    }
+
+    private void execute(int songIndex){
         //make the index is not less than zero or more than song array list size
         if (songIndex >= 0 && songIndex < getSongArrayList().size()) {
             //System.out.println("Playing => " + getSongArrayList().get(songIndex).getSongName());
@@ -137,6 +141,18 @@ public class MP3Player extends Application{
         } else {
             System.out.println("invalid song selection");
         }
+    }
+
+    public void pauseSong(){
+        //waitCounter if song array list is empty
+        if (getSongArrayList().get(currentSongIndex).getMediaPlayer() == null) { return; }
+        getSongArrayList().get(this.currentSongIndex).getMediaPlayer().pause();
+    }
+
+    public void resumeSong(){
+        //waitCounter if song array list is empty
+        if (getSongArrayList().get(currentSongIndex).getMediaPlayer() == null) { return; }
+        execute(this.currentSongIndex);
     }
 
     public void playNext() {
@@ -188,6 +204,10 @@ public class MP3Player extends Application{
 
     public void setRun(Task run) {
         this.run = run;
+    }
+
+    public int getCurrentSongIndex() {
+        return currentSongIndex;
     }
 
     //unit test

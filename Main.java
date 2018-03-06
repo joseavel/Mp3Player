@@ -1,21 +1,25 @@
 import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 public class Main extends Application {
     private TableView<Song> songTableView;
     private MenuBar menuBar;
-    Menu file;
+    private Menu file;
+    private Button playButton;
 
     public Main() {
         songTableView();
         menuBar();
+        controlButtons();
     }
 
     @Override
@@ -26,9 +30,30 @@ public class Main extends Application {
         borderPane.setTop(this.menuBar);
         borderPane.setCenter(this.songTableView);
 
-        Controller controller = new Controller(this.songTableView, this.file);
+        HBox hBox = new HBox();
+        hBox.setAlignment(Pos.CENTER);
+        hBox.setPadding(new Insets(5));
+        hBox.getChildren().addAll(this.playButton);
+
+        borderPane.setBottom(hBox);
+
+        Controller controller = new Controller(this.songTableView, this.file, this.playButton);
         primaryStage.setScene(new Scene(borderPane, 900, 600));
+        primaryStage.setResizable(false);
         primaryStage.show();
+    }
+
+    private void controlButtons(){
+        this.playButton = new Button("Play");
+        controlButtonStyle(this.playButton,"5","60");
+    }
+
+    private void controlButtonStyle(Button button,String radius,String height){
+        button.setStyle(
+                new Style().radius(radius) +
+                new Style().styleHeightWidth("min","height",height) +
+                new Style().styleHeightWidth("min","width",height)
+        );
     }
 
     private void menuBar() {
