@@ -30,3 +30,6 @@ A next button
 A previous button
 - allows you to play the previous song.
 
+### Visual
+![Screenshot](mp3Playerprogress.png)
+
