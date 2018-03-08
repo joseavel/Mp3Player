@@ -18,7 +18,7 @@ A file menu bar with the following choices :
 - coming soon
 
 A display section for the songs with the following features:
-- loads the songs folder if it exist and display the songs in it (the folder is included in this repository..this will go away when i added the add song functionality to the file menu.) 
+- you are able to see the name and duration of each song
 - you are able to click the song you want to play
 
 A play button:
