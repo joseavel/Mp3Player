@@ -26,4 +26,16 @@ public class StandBy implements Mp3State {
     public void resumeSong(MP3Player mp3Player) {
         //cant resume on standby
     }
+
+    @Override
+    public void playNextSong(MP3Player mp3Player) {
+        mp3Player.playNext();
+        this.mode.setMp3State(this.mode.getPlaying());
+    }
+
+    @Override
+    public void playPreviousSong(MP3Player mp3Player) {
+        mp3Player.playPrevious();
+        this.mode.setMp3State(this.mode.getPlaying());
+    }
 }

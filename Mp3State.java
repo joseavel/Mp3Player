@@ -6,4 +6,6 @@ public interface Mp3State {
     void playSong(MP3Player mp3Player, int selectedIndex);
     void pauseSong(MP3Player mp3Player);
     void resumeSong(MP3Player mp3Player);
+    void playNextSong(MP3Player mp3Player);
+    void playPreviousSong(MP3Player mp3Player);
 }

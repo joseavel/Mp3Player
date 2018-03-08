@@ -27,4 +27,16 @@ public class Playing implements Mp3State {
     public void resumeSong(MP3Player mp3Player) {
         //cant resume if its already playing
     }
+
+    @Override
+    public void playNextSong(MP3Player mp3Player) {
+        this.mode.setMp3State(this.mode.getStandBy());
+        this.mode.getMp3State().playNextSong(mp3Player);
+    }
+
+    @Override
+    public void playPreviousSong(MP3Player mp3Player) {
+        this.mode.setMp3State(this.mode.getStandBy());
+        this.mode.getMp3State().playPreviousSong(mp3Player);
+    }
 }

@@ -20,14 +20,22 @@ public class Controller {
     private TableView<Song> songTableView;
     private Menu file;
     private Button playButton;
+    private Button previousButton;
+    private Button nextButton;
 
-    public Controller(TableView<Song> songTableView, Menu file, Button playButton) {
+    public Controller(
+            TableView<Song> songTableView, Menu file, Button playButton,
+            Button previousButton, Button nextButton
+    ) {
+
         this.mp3Player = new MP3Player();
         this.mp3 = new MP3();
 
         this.file = file;
         this.songTableView = songTableView;
         this.playButton = playButton;
+        this.previousButton = previousButton;
+        this.nextButton = nextButton;
 
         /* functionality */
         songTableViewStyle();
@@ -41,24 +49,56 @@ public class Controller {
 
     private void controlButtonHandlers(){
         this.playButton.setOnAction(event -> {
-
+            if(this.songTableView.getItems().isEmpty()){return;}
             if(this.playButton.getText().equals("Play")){
-
-                if(this.songTableView.getItems().isEmpty()){return;}
-
                 if(this.songTableView.getSelectionModel().getSelectedItem() == null){
                     cellHandler(this.songTableView.getItems().get(0));
                 }else{
                     //TODO:resume the MP3Player
-                    this.mp3.getMp3State().resumeSong(mp3Player);
+                    this.mp3.getMp3State().resumeSong(this.mp3Player);
                     playButtonChange("Pause");
                 }
+
             }else{
                 //TODO:pause the MP3Player
                 this.mp3.getMp3State().pauseSong(this.mp3Player);
                 playButtonChange("Play");
             }
+
+            checkButton();
         });
+
+        this.previousButton.setOnAction(event -> {
+            if(this.songTableView.getItems().isEmpty()){return;}
+            this.mp3.getMp3State().playPreviousSong(this.mp3Player);
+            this.songTableView.getSelectionModel().selectPrevious();
+            playButtonChange("Pause");
+            checkButton();
+        });
+
+        this.nextButton.setOnAction(event -> {
+            if(this.songTableView.getItems().isEmpty()){return;}
+            this.mp3.getMp3State().playNextSong(this.mp3Player);
+            this.songTableView.getSelectionModel().selectNext();
+            playButtonChange("Pause");
+            checkButton();
+        });
+    }
+
+    private void checkButton(){
+
+        //some code to disable buttons
+        if(this.songTableView.getSelectionModel().getSelectedIndex() <= 0){
+            this.previousButton.setDisable(true);
+        }else{
+            this.previousButton.setDisable(false);
+        }
+
+        if(this.songTableView.getSelectionModel().getSelectedIndex() >= this.songTableView.getItems().size() - 1){
+            this.nextButton.setDisable(true);
+        }else{
+            this.nextButton.setDisable(false);
+        }
     }
 
     private void playButtonChange(String change){
@@ -128,6 +168,7 @@ public class Controller {
         this.songTableView.getSelectionModel().select(song);
         this.mp3.getMp3State().playSong(this.mp3Player, songTableView.getSelectionModel().getSelectedIndex());
         playButtonChange("Pause");
+        checkButton();
     }
 
     private void mp3Task() {
@@ -149,6 +190,7 @@ public class Controller {
 
                 songTableView.setItems(observableList);
                 songTableView.getSelectionModel().focus(-1);
+                playButton.setDisable(false);
                 return null; //there is nothing important to return
             }
         };
@@ -179,7 +221,11 @@ public class Controller {
 
         //create a thread to handle adding songs to the MP3Player
         Thread thread = new Thread(() -> {
-            this.mp3.getMp3State().addSong(stringArrayList, mp3Player);
+            try {
+                this.mp3.getMp3State().addSong(stringArrayList, mp3Player);
+            }catch (Exception e){
+                System.out.println("Mp3 player did not fully load.");
+            }
         });
         thread.start();
     }

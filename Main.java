@@ -8,6 +8,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -15,6 +16,8 @@ public class Main extends Application {
     private MenuBar menuBar;
     private Menu file;
     private Button playButton;
+    private Button nextButton;
+    private Button previousButton;
 
     public Main() {
         songTableView();
@@ -33,11 +36,15 @@ public class Main extends Application {
         HBox hBox = new HBox();
         hBox.setAlignment(Pos.CENTER);
         hBox.setPadding(new Insets(5));
-        hBox.getChildren().addAll(this.playButton);
+        hBox.setSpacing(5);
+        hBox.getChildren().addAll(this.previousButton,this.playButton,this.nextButton);
 
         borderPane.setBottom(hBox);
 
-        Controller controller = new Controller(this.songTableView, this.file, this.playButton);
+        Controller controller = new Controller(
+                this.songTableView, this.file, this.playButton,
+                this.previousButton,this.nextButton
+        );
         primaryStage.setScene(new Scene(borderPane, 900, 600));
         primaryStage.setResizable(false);
         primaryStage.show();
@@ -45,7 +52,16 @@ public class Main extends Application {
 
     private void controlButtons(){
         this.playButton = new Button("Play");
+        this.playButton.setDisable(true);
         controlButtonStyle(this.playButton,"5","60");
+
+        this.nextButton = new Button(">>");
+        this.nextButton.setDisable(true);
+        controlButtonStyle(this.nextButton,"5","45");
+
+        this.previousButton = new Button("<<");
+        this.previousButton.setDisable(true);
+        controlButtonStyle(this.previousButton,"5","45");
     }
 
     private void controlButtonStyle(Button button,String radius,String height){
