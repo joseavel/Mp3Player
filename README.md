@@ -23,8 +23,10 @@ A display section for the songs with the following features:
 
 A play button:
 - allows you to play and pause a song.
+
 A next button
 - allows you to play the next song.
+
 A previous button
 - allows you to play the previous song.
 
